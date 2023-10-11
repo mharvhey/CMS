@@ -1,0 +1,39 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const app = express();
+
+// Dummy in-memory datastore
+let articles = [
+    { id: 1, title: "Article 1", content: "This is article 1" },
+    { id: 2, title: "Article 2", content: "This is article 2" }
+];
+
+app.use(cors());
+app.use(bodyParser.json());
+// Get all articles
+app.get('/articles', (req, res) => {
+    res.json(articles);
+});
+
+// Add an article
+app.post('/articles', (req, res) => {
+    const article = {
+        id: articles.length + 1,
+        title: req.body.title,
+        content: req.body.content
+    };
+    articles.push(article);
+    res.json(article);
+});
+
+// Delete an article
+app.delete('/articles/:id', (req, res) => {
+    articles = articles.filter(article => article.id !== parseInt(req.params.id));
+    res.json({ message: "Deleted" });
+});
+
+const PORT = 5000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
